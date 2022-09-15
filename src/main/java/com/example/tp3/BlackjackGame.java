@@ -84,7 +84,6 @@ public class BlackjackGame {
     
 	//retourne le deuxième carte dans la main du courtier.
     public Card getDealerShowCard() {
-        System.out.println("\nDealer show Card");
         return dealerHand.getCards().get(1);
      }
     

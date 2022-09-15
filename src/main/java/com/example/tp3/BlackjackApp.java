@@ -4,18 +4,24 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
+
 import static javafx.application.Application.launch;
 
 public class BlackjackApp extends Application {
-
+    TextField betField;
+    ListView dealCardsField;
+    ListView playerCardsField;
+    static TextField winnerField;
+    static TextField moneyStart;
+    static Button hitButton;
+    static Button standButton;
+    TextField playerPointField;
+    TextField dealerPointsField;
     private static BlackjackGame game;
 
 
@@ -72,29 +78,21 @@ public class BlackjackApp extends Application {
 
 	// affiche Total money:  et le montant total
     private static void showMoney() {
-        System.out.printf("Total money: %s",game.getTotalMoney());
-        System.out.println();
-
+        moneyStart.setText(Double.toString(game.getTotalMoney()));
     }
     private static void showWinner() {
-        System.out.println();
-        showPlayerHand();
-        System.out.printf("YOUR POINTS: %d%n", game.getPlayerHand().getPoints());
-        System.out.println();
-
-        showDealerHand();
-        System.out.printf("DEALER'S POINTS: %d%n%n", game.getDealerHand().getPoints());
-
+        standButton.setDisable(true);
+        hitButton.setDisable(true);
         if(game.isPush()) {
-            System.out.println("Push!");
+            winnerField.setText("Push!");
         } else if(game.getPlayerHand().isBlackjack()) {
-            System.out.println("BLACKJACK! You win!");
+            winnerField.setText("BLACKJACK! You win!");
             game.addBlackjackToTotal();
         } else if (game.playerWins()) {
-            System.out.println("You win!");
+            winnerField.setText("You win!");
             game.addBetToTotal();
         } else {
-            System.out.println("Sorry, you lose.");
+            winnerField.setText("Sorry, you lose.");
             game.subtractBetFromTotal();
         }
         showMoney();
@@ -112,7 +110,7 @@ public class BlackjackApp extends Application {
         Label moneyLabel = new Label("Money: ");
         grid.add(moneyLabel, 0, 0);
 
-        TextField moneyStart = new TextField();
+        moneyStart = new TextField();
         grid.add(moneyStart, 1, 0);
         moneyStart.setText(Double.toString(game.loadMoney()));
 
@@ -120,7 +118,7 @@ public class BlackjackApp extends Application {
         grid.add(betLabel, 0,1 );
 
 
-        TextField betField = new TextField();
+        betField = new TextField();
         grid.add(betField, 1, 1);
 
 
@@ -130,13 +128,13 @@ public class BlackjackApp extends Application {
         Label dealerCardsLabel = new Label("Cards: ");
         grid.add(dealerCardsLabel, 0,3);
 
-        TextArea dealCardsField = new TextArea();
+        dealCardsField = new ListView();
         grid.add(dealCardsField, 1,3);
 
         Label dealerPointsLabel = new Label("Points: ");
         grid.add(dealerPointsLabel, 0, 4);
 
-        TextField dealerPointsField = new TextField();
+        dealerPointsField = new TextField();
         grid.add(dealerPointsField, 1, 4);
 
         Label playerLabel = new Label("PLAYER");
@@ -145,22 +143,22 @@ public class BlackjackApp extends Application {
         Label playerCardsLabel = new Label("Cards: ");
         grid.add(playerCardsLabel, 0,6);
 
-        TextArea playerCardsField = new TextArea();
+        playerCardsField = new ListView();
         grid.add(playerCardsField, 1,6);
 
-    //  Cartes PLayer
+    //  Points PLayer
         Label playerPointLabel = new Label("Points: ");
         grid.add(playerPointLabel, 0, 7);
 
-        TextField playerPointField = new TextField();
+        playerPointField = new TextField();
         grid.add(playerPointField, 1, 7);
 
     //  Bouton Hit N Stand
 
-        Button hitButton = new Button();
+        hitButton = new Button();
         hitButton.setText("Hit");
 
-        Button standButton = new Button();
+        standButton = new Button();
         standButton.setText("Stand");
 
 
@@ -172,21 +170,28 @@ public class BlackjackApp extends Application {
 
         grid.add(HitStandButtonBox, 0, 8);
 
+        hitButton.setOnAction(event -> hitAction());
+        standButton.setOnAction(event -> standAction());
+
 //  Resultat win or loose!
 
         Label winnerLabel = new Label("RESULT: ");
         grid.add(winnerLabel, 0, 9);
 
-        TextField winnerField = new TextField();
+        winnerField = new TextField();
         grid.add(winnerField, 1, 9);
 
 //    Bouton Play ou Exit
 
         Button playButton = new Button();
         playButton.setText("Play");
+        playButton.setOnAction(e -> playAction());
 
         Button exitButton = new Button();
         exitButton.setText("Exit");
+        exitButton.setOnAction(event -> {
+            System.exit(0);
+        });
 
 
         HBox playButtonBox = new HBox(10);
@@ -212,9 +217,58 @@ public class BlackjackApp extends Application {
 
 
 
+
         Scene scene = new Scene(grid, 320, 240);
         stage.setTitle("BlackJack App!");
         stage.setScene(scene);
         stage.show();
+    }
+
+    private void standAction() {
+        game.stand();
+        dealCardsField.getItems().clear();
+        for (Card card: game.getDealerHand().getCards()) {
+            dealCardsField.getItems().add(card.display());
+        }
+        standButton.setDisable(true);
+        hitButton.setDisable(true);
+        showWinner();
+
+    }
+
+    private void playAction() {
+            moneyStart.setText(Double.toString(game.getTotalMoney()));
+            dealCardsField.getItems().clear();
+            playerCardsField.getItems().clear();
+            winnerField.clear();
+            standButton.setDisable(false);
+            hitButton.setDisable(false);
+            game.deal();
+            dealerPointsField.setText(Double.toString(game.getDealerHand().getPoints()));
+            playerPointField.setText(Double.toString(game.getPlayerHand().getPoints()));
+            dealCardsField.getItems().add(game.getDealerShowCard().display());
+            for (Card card: game.getPlayerHand().getCards()) {
+                playerCardsField.getItems().add(card.display());
+            }
+            if (game.getPlayerHand().isBlackjack() || game.getDealerHand().isBlackjack()){
+                showWinner();
+            }
+        }
+
+
+    private void hitAction() {
+        game.hit();
+        dealerPointsField.setText(Double.toString(game.getDealerHand().getPoints()));
+        playerPointField.setText(Double.toString(game.getPlayerHand().getPoints()));
+        playerCardsField.getItems().clear();
+        for (Card card: game.getPlayerHand().getCards()) {
+            playerCardsField.getItems().add(card.display());
+        }
+        if (game.getPlayerHand().isBust() || game.getPlayerHand().getPoints() == 21) {
+            hitButton.setDisable(true);
+            showWinner();
+        }
+
+
     }
 }
