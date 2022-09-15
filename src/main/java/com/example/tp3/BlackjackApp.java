@@ -233,7 +233,6 @@ public class BlackjackApp extends Application {
         standButton.setDisable(true);
         hitButton.setDisable(true);
         showWinner();
-
     }
 
     private void playAction() {
