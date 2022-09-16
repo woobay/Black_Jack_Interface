@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 import static javafx.application.Application.launch;
 
 public class BlackjackApp extends Application {
-    TextField betField;
+    static TextField betField;
     ListView dealCardsField;
     ListView playerCardsField;
     static TextField winnerField;
@@ -22,6 +22,8 @@ public class BlackjackApp extends Application {
     static Button standButton;
     TextField playerPointField;
     TextField dealerPointsField;
+    static Button playButton;
+    static Button exitButton;
     private static BlackjackGame game;
 
 
@@ -37,7 +39,7 @@ public class BlackjackApp extends Application {
     
 	// affiche le message Bet amount, lire la valeur de la mise saisi par le joueur. Valide cette valeur. Si la valeur n'est pas valide afficher le message Bet must be between
     private static void getBetAmount() {
-        game.setBet(Console.getDouble("Enter bet amount: ", game.getMinBet(), game.getMaxBet()));
+        game.setBet(Double.valueOf(betField.getText()));
      }
 
 	// Affiche le message Hit or Stand? (h/s): et puis retourne ce que le joueur a tappe.
@@ -95,7 +97,9 @@ public class BlackjackApp extends Application {
             winnerField.setText("Sorry, you lose.");
             game.subtractBetFromTotal();
         }
-        showMoney();
+        playButton.setDisable(false);
+        exitButton.setDisable(false);
+        moneyStart.setText(Double.toString(game.getTotalMoney()));
     }
 
     @Override
@@ -112,7 +116,7 @@ public class BlackjackApp extends Application {
 
         moneyStart = new TextField();
         grid.add(moneyStart, 1, 0);
-        moneyStart.setText(Double.toString(game.loadMoney()));
+
 
         Label betLabel = new Label("Bet: ");
         grid.add(betLabel, 0,1 );
@@ -183,11 +187,11 @@ public class BlackjackApp extends Application {
 
 //    Bouton Play ou Exit
 
-        Button playButton = new Button();
+        playButton = new Button();
         playButton.setText("Play");
         playButton.setOnAction(e -> playAction());
 
-        Button exitButton = new Button();
+        exitButton = new Button();
         exitButton.setText("Exit");
         exitButton.setOnAction(event -> {
             System.exit(0);
@@ -230,26 +234,33 @@ public class BlackjackApp extends Application {
         for (Card card: game.getDealerHand().getCards()) {
             dealCardsField.getItems().add(card.display());
         }
+        dealerPointsField.setText(Double.toString(game.getDealerHand().getPoints()));
+        playerPointField.setText(Double.toString(game.getPlayerHand().getPoints()));
         standButton.setDisable(true);
         hitButton.setDisable(true);
         showWinner();
     }
 
     private void playAction() {
+
+            getBetAmount();
             moneyStart.setText(Double.toString(game.getTotalMoney()));
             dealCardsField.getItems().clear();
             playerCardsField.getItems().clear();
+            dealerPointsField.clear();
             winnerField.clear();
             standButton.setDisable(false);
             hitButton.setDisable(false);
             game.deal();
-            dealerPointsField.setText(Double.toString(game.getDealerHand().getPoints()));
             playerPointField.setText(Double.toString(game.getPlayerHand().getPoints()));
             dealCardsField.getItems().add(game.getDealerShowCard().display());
             for (Card card: game.getPlayerHand().getCards()) {
                 playerCardsField.getItems().add(card.display());
             }
+            playButton.setDisable(true);
+            exitButton.setDisable(true);
             if (game.getPlayerHand().isBlackjack() || game.getDealerHand().isBlackjack()){
+
                 showWinner();
             }
         }
@@ -257,7 +268,6 @@ public class BlackjackApp extends Application {
 
     private void hitAction() {
         game.hit();
-        dealerPointsField.setText(Double.toString(game.getDealerHand().getPoints()));
         playerPointField.setText(Double.toString(game.getPlayerHand().getPoints()));
         playerCardsField.getItems().clear();
         for (Card card: game.getPlayerHand().getCards()) {
