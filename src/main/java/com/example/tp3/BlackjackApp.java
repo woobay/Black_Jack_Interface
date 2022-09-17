@@ -163,7 +163,7 @@ public class BlackjackApp extends Application {
 
                     playerPointField.setText(String.valueOf(game.getPlayerHand().getPoints()));
                 }else{
-                    errorMessage("Your Bet must be between " + formatNumber(game.getMinBet()) + " or " + formatNumber(game.getMaxBet()) + " or your total money");
+                    errorMessage("Your Bet must be between " + formatNumber(game.getMinBet()) + " and " + formatNumber(game.getMaxBet()) + " or your total money");
                     return;
                 }
                 if (game.getPlayerHand().isBlackjack() || game.getDealerHand().isBlackjack()){
@@ -249,7 +249,7 @@ public class BlackjackApp extends Application {
         if(game.isOutOfMoney()) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText("You are out of money");
-            alert.setContentText("If do you want play against, press Play Again button");
+            alert.setContentText("If you'd like to play again, press Play Again");
             alert.showAndWait();
             game.resetMoney();
         }
