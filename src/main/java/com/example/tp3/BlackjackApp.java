@@ -222,13 +222,6 @@ public class BlackjackApp extends Application {
             playerCardsField.getItems().add(card.display());
         }
     }
-
-	// affiche Total money
-    private String formatNumber(double num) {
-        NumberFormat currency = NumberFormat.getCurrencyInstance(Locale.CANADA_FRENCH);
-        String formatNumber = currency.format(num);
-        return formatNumber;
-    }
     private void showWinner() {
 
         showDealerHand();
@@ -262,6 +255,8 @@ public class BlackjackApp extends Application {
         }
         playButton.setText("Play Again");
     }
+
+    //--------------------------------- Methode de service----------------------
     private void resultText(String mess, String color){
         resultField.setText(mess);
         resultField.setStyle(color);
@@ -271,5 +266,11 @@ public class BlackjackApp extends Application {
     }
     private void errorMessage(String mess){
         errorMessageLabel.setText(mess);
+    }
+    // affiche Total money
+    private String formatNumber(double num) {
+        NumberFormat currency = NumberFormat.getCurrencyInstance(Locale.CANADA_FRENCH);
+        String formatNumber = currency.format(num);
+        return formatNumber;
     }
 }
