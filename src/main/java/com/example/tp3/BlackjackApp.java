@@ -24,7 +24,7 @@ public class BlackjackApp extends Application {
     ListView<String> dealerCardsField = new ListView<>();
     TextField dealerPointsField = new TextField();
     ListView<String>  playerCardsField = new ListView<>();
-    TextField winnerField = new TextField();
+    TextField resultField = new TextField();
     TextField playerPointField = new TextField();
     Label errorMessageLabel = new Label();
     Button playButton = new Button();
@@ -38,7 +38,7 @@ public class BlackjackApp extends Application {
     }
     public void start(Stage stage){
         game = new BlackjackGame();
-        moneyField.setText(showMoney());
+        moneyField.setText(formatNumber(game.getTotalMoney()));
         disableButton(hitButton, true);
         disableButton(standButton, true);
 
@@ -48,7 +48,7 @@ public class BlackjackApp extends Application {
         grid.setVgap(10);
         grid.setHgap(10);
 
-        grid.add(errorMessageLabel,0, 11);
+        grid.add(errorMessageLabel,0, 11,2, 1);
         errorMessageLabel.setTextFill(Color.RED);
 
         Label moneyLabel = new Label("Money: ");
@@ -87,8 +87,8 @@ public class BlackjackApp extends Application {
 
         Label winnerLabel = new Label("RESULT: ");
         grid.add(winnerLabel, 0, 9);
-        grid.add(winnerField, 1, 9);
-        winnerField.setFocusTraversable(false);
+        grid.add(resultField, 1, 9);
+        resultField.setFocusTraversable(false);
 
         //Button Hit and Stand
         hitButton.setText("Hit");
@@ -136,12 +136,12 @@ public class BlackjackApp extends Application {
         if(playButton.getText().equals("Play Again")){
             errorMessage("");
             betField.setText("");
-            winnerField.setText("");
+            resultField.setText("");
             playerCardsField.getItems().clear();
             dealerCardsField.getItems().clear();
             dealerPointsField.setText("");
             playerPointField.setText("");
-            moneyField.setText(showMoney());
+            moneyField.setText(formatNumber(game.getTotalMoney()));
             playButton.setText("Play");
             betField.requestFocus();
         }
@@ -162,14 +162,14 @@ public class BlackjackApp extends Application {
 
                     playerPointField.setText(String.valueOf(game.getPlayerHand().getPoints()));
                 }else{
-                    errorMessage("Bet not valide!!");
+                    errorMessage("Your Bet must be between " + formatNumber(game.getMinBet()) + " or " + formatNumber(game.getMaxBet()) + " or your total money");
                     return;
                 }
                 if (game.getPlayerHand().isBlackjack() || game.getDealerHand().isBlackjack()){
                     showWinner();
                 }
             }catch (NumberFormatException e){
-                errorMessage("Bet not valide!!");
+                errorMessage("You must be enter a number!!");
             }
         }
     }
@@ -223,10 +223,10 @@ public class BlackjackApp extends Application {
     }
 
 	// affiche Total money
-    private String showMoney() {
+    private String formatNumber(double num) {
         NumberFormat currency = NumberFormat.getCurrencyInstance(Locale.CANADA_FRENCH);
-        String totalMoneyFormatter = currency.format(game.getTotalMoney());
-        return totalMoneyFormatter;
+        String formatNumber = currency.format(num);
+        return formatNumber;
     }
     private void showWinner() {
 
@@ -239,19 +239,19 @@ public class BlackjackApp extends Application {
         dealerPointsField.setText(String.valueOf(game.getDealerHand().getPoints()));
 
         if(game.isPush()) {
-            winnerField.setText("Push!");
+            resultText("Push!", "-fx-text-fill: grey");
         } else if(game.getPlayerHand().isBlackjack()) {
-            winnerField.setText("BLACKJACK! You win!");
+            resultText("BLACKJACK! You win!", "-fx-text-fill: green");
             game.addBlackjackToTotal();
         } else if (game.playerWins()) {
-            winnerField.setText("You win!");
+            resultText("You win!", "-fx-text-fill: green");
             game.addBetToTotal();
         } else {
-            if(game.getDealerHand().isBlackjack()) winnerField.setText("Dealer BLACKJACK!! Sorry, you lose");
-            else winnerField.setText("Sorry, you lose.");
+            if(game.getDealerHand().isBlackjack()) resultText("Dealer BLACKJACK!! Sorry, you lose..", "-fx-text-fill: red");
+            else resultText("Sorry, you lose", "-fx-text-fill: red");
             game.subtractBetFromTotal();
         }
-        moneyField.setText(showMoney());
+        moneyField.setText(formatNumber(game.getTotalMoney()));
         if(game.isOutOfMoney()) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText("You are out of money");
@@ -260,6 +260,10 @@ public class BlackjackApp extends Application {
             game.resetMoney();
         }
         playButton.setText("Play Again");
+    }
+    private void resultText(String mess, String color){
+        resultField.setText(mess);
+        resultField.setStyle(color);
     }
     private void disableButton(Button button, boolean bol){
         button.setDisable(bol);
