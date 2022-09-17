@@ -118,70 +118,79 @@ public class BlackjackApp extends Application {
         stage.show();
 
         //-------------------event button---------------------
-        playButton.setOnAction(event -> {
+        betField.setOnAction(event -> playEvent());
 
-            if(playButton.getText().equals("Play Again")){
-                errorMessage("");
-                betField.setText("");
-                winnerField.setText("");
-                playerCardsField.getItems().clear();
-                dealerCardsField.getItems().clear();
-                dealerPointsField.setText("");
-                playerPointField.setText("");
-                moneyField.setText(showMoney());
-                playButton.setText("Play");
-            }
-            else{
-                try {
-                    if(game.isValidBet(Double.parseDouble(betField.getText()))){
-                        errorMessage("");
-                        disableButton(hitButton, false);
-                        disableButton(standButton, false);
-                        disableButton(playButton, true);
-                        disableButton(exitButton, true);
+        playButton.setOnAction(event -> playEvent());
 
-                        game.deal();
-                        showDealerShowCard();
-                        showPlayerHand();
+        exitButton.setOnAction(actionEvent -> { System.exit(0); });
 
-                        playerPointField.setText(String.valueOf(game.getPlayerHand().getPoints()));
-                    }else{
-                        errorMessage("Bet not valide!!");
-                        return;
-                    }
-                    if (game.getPlayerHand().isBlackjack() || game.getDealerHand().isBlackjack()){
-                        showWinner();
-                    }
-                }catch (NumberFormatException e){
-                    errorMessage("Bet not valide!!");
-                }
-            }
+        hitButton.setOnAction(event -> hitEvent());
 
-        });
+        standButton.setOnAction(event -> standEvent());
+    }
 
-        exitButton.setOnAction(actionEvent -> {
-            System.exit(0);
-        });
+    //----------------------Methode des Events--------------------
+    private void playEvent(){
+        betField.setEditable(true);
 
-        hitButton.setOnAction(event -> {
+        if(playButton.getText().equals("Play Again")){
+            errorMessage("");
+            betField.setText("");
+            winnerField.setText("");
             playerCardsField.getItems().clear();
-            game.hit();
-            showPlayerHand();
-            playerPointField.setText(String.valueOf(game.getPlayerHand().getPoints()));
+            dealerCardsField.getItems().clear();
+            dealerPointsField.setText("");
+            playerPointField.setText("");
+            moneyField.setText(showMoney());
+            playButton.setText("Play");
+            betField.requestFocus();
+        }
+        else{
+            try {
+                if(game.isValidBet(Double.parseDouble(betField.getText()))){
+                    errorMessage("");
+                    betField.setEditable(false);
+                    disableButton(hitButton, false);
+                    disableButton(standButton, false);
+                    disableButton(playButton, true);
+                    disableButton(exitButton, true);
+                    hitButton.requestFocus();
 
-            if (game.getPlayerHand().isBust() || game.getPlayerHand().getPoints() == 21) {
-                dealerTurn();
+                    game.deal();
+                    showDealerShowCard();
+                    showPlayerHand();
+
+                    playerPointField.setText(String.valueOf(game.getPlayerHand().getPoints()));
+                }else{
+                    errorMessage("Bet not valide!!");
+                    return;
+                }
+                if (game.getPlayerHand().isBlackjack() || game.getDealerHand().isBlackjack()){
+                    showWinner();
+                }
+            }catch (NumberFormatException e){
+                errorMessage("Bet not valide!!");
             }
-        });
+        }
+    }
 
-        standButton.setOnAction(event -> {
-            disableButton(hitButton, true);
-            disableButton(standButton, true);
-            disableButton(playButton, false);
-            disableButton(exitButton, false);
+    private void hitEvent(){
+        playerCardsField.getItems().clear();
+        game.hit();
+        showPlayerHand();
+        playerPointField.setText(String.valueOf(game.getPlayerHand().getPoints()));
 
+        if (game.getPlayerHand().isBust() || game.getPlayerHand().getPoints() == 21) {
             dealerTurn();
-        });
+        }
+    }
+    private void standEvent(){
+        disableButton(hitButton, true);
+        disableButton(standButton, true);
+        disableButton(playButton, false);
+        disableButton(exitButton, false);
+
+        dealerTurn();
     }
 
     //-------------------- Les methodes ------------------
