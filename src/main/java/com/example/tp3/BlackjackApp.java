@@ -53,13 +53,12 @@ public class BlackjackApp extends Application {
 
         Label moneyLabel = new Label("Money: ");
         grid.add(moneyLabel, 0, 0);
-
         grid.add(moneyField, 1, 0);
         moneyField.setEditable(false);
+        moneyField.setFocusTraversable(false);
 
         Label betLabel = new Label("Bet: ");
         grid.add(betLabel, 0,1 );
-
         grid.add(betField, 1, 1);
 
         Label dealerLabel = new Label("DEALER");
@@ -71,7 +70,6 @@ public class BlackjackApp extends Application {
 
         Label dealerPointsLabel = new Label("Points: ");
         grid.add(dealerPointsLabel, 0, 4);
-
         grid.add(dealerPointsField, 1, 4);
         dealerPointsField.setEditable(false);
 
@@ -87,21 +85,39 @@ public class BlackjackApp extends Application {
         grid.add(playerPointField, 1, 7);
         playerPointField.setEditable(false);
 
-        for(int i = 0; i < grid.getColumnCount(); i++){
-            ColumnConstraints col = new ColumnConstraints(210);
-            grid.getColumnConstraints().add(col);
-        }
+        Label winnerLabel = new Label("RESULT: ");
+        grid.add(winnerLabel, 0, 9);
+        grid.add(winnerField, 1, 9);
+        winnerField.setFocusTraversable(false);
+
+        //Button Hit and Stand
+        hitButton.setText("Hit");
+        standButton.setText("Stand");
+        HBox HitStandButtonBox = new HBox(10);
+        HitStandButtonBox.getChildren().addAll(hitButton, standButton);
+        HitStandButtonBox.setAlignment(Pos.BOTTOM_LEFT);
+        grid.add(HitStandButtonBox, 0, 8);
 
         // Bouton Play et Exit
         playButton.setText("Play");
         exitButton.setText("Exit");
-
         HBox playButtonBox = new HBox(10);
         playButtonBox.getChildren().addAll(playButton, exitButton);
         playButtonBox.setAlignment(Pos.BOTTOM_LEFT);
         grid.add(playButtonBox, 0, 10);
 
+        // Definition des largeurs des colonnes
+        for(int i = 0; i < grid.getColumnCount(); i++){
+            ColumnConstraints col = new ColumnConstraints(210);
+            grid.getColumnConstraints().add(col);
+        }
 
+        Scene scene = new Scene(grid, 600, 600);
+        stage.setTitle("BlackJack App!");
+        stage.setScene(scene);
+        stage.show();
+
+        //-------------------event button---------------------
         playButton.setOnAction(event -> {
 
             if(playButton.getText().equals("Play Again")){
@@ -142,18 +158,10 @@ public class BlackjackApp extends Application {
             }
 
         });
+
         exitButton.setOnAction(actionEvent -> {
             System.exit(0);
         });
-
-        //  Button Hit and Stand
-
-        hitButton.setText("Hit");
-        standButton.setText("Stand");
-        HBox HitStandButtonBox = new HBox(10);
-        HitStandButtonBox.getChildren().addAll(hitButton, standButton);
-        HitStandButtonBox.setAlignment(Pos.BOTTOM_LEFT);
-        grid.add(HitStandButtonBox, 0, 8);
 
         hitButton.setOnAction(event -> {
             playerCardsField.getItems().clear();
@@ -165,6 +173,7 @@ public class BlackjackApp extends Application {
                 dealerTurn();
             }
         });
+
         standButton.setOnAction(event -> {
             disableButton(hitButton, true);
             disableButton(standButton, true);
@@ -173,22 +182,9 @@ public class BlackjackApp extends Application {
 
             dealerTurn();
         });
-
-
-        //  Resultat win or loose!
-
-        Label winnerLabel = new Label("RESULT: ");
-        grid.add(winnerLabel, 0, 9);
-
-        grid.add(winnerField, 1, 9);
-        playerPointField.setEditable(false);
-
-        Scene scene = new Scene(grid, 600, 600);
-        stage.setTitle("BlackJack App!");
-        stage.setScene(scene);
-        stage.show();
     }
 
+    //-------------------- Les methodes ------------------
     private void dealerTurn(){
         dealerCardsField.getItems().clear();
         game.stand();
@@ -217,7 +213,7 @@ public class BlackjackApp extends Application {
         }
     }
 
-	// affiche Total money:  et le montant total
+	// affiche Total money
     private String showMoney() {
         NumberFormat currency = NumberFormat.getCurrencyInstance(Locale.CANADA_FRENCH);
         String totalMoneyFormatter = currency.format(game.getTotalMoney());

@@ -37,8 +37,6 @@ public class BlackjackGame {
 	//retourne false si double localBetAmt est inférieur au minBet ou supérieur au maxBet ou supérieur au totalMoney. True sinon.
     public boolean isValidBet(double bet) {
         if((bet >= minBet && bet <= maxBet) && (bet <= totalMoney)){
-            System.out.println((bet >= minBet && bet <= maxBet) || (bet <= totalMoney));
-
             setBet(bet);
             return true;
         }else{
