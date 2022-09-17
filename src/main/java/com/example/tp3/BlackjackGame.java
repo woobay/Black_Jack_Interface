@@ -35,8 +35,13 @@ public class BlackjackGame {
     }
     
 	//retourne false si double localBetAmt est inférieur au minBet ou supérieur au maxBet ou supérieur au totalMoney. True sinon.
-    public boolean isValidBet(double localBetAmt) {
-        return !(localBetAmt < minBet) && !(localBetAmt > maxBet);
+    public boolean isValidBet(double bet) {
+        if((bet >= minBet && bet <= maxBet) && (bet <= totalMoney)){
+            setBet(bet);
+            return true;
+        }else{
+            return false;
+        }
     }
     
 	//retourner minBet
@@ -55,8 +60,8 @@ public class BlackjackGame {
     }
     
 	//pour intialiser le montant de la mise qu'on va le faire
-    public void setBet(double amt) {
-        this.betAmount = amt;
+    public void setBet(double bet) {
+        this.betAmount = bet;
     }
     
 	// distribue deux cartes pour le joueur (playerHand) et deux cartes pour le courtier (dealerHand).
@@ -84,7 +89,6 @@ public class BlackjackGame {
     
 	//retourne le deuxième carte dans la main du courtier.
     public Card getDealerShowCard() {
-        System.out.println("\nDealer show Card");
         return dealerHand.getCards().get(1);
      }
     
