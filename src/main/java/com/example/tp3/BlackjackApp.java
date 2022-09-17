@@ -11,6 +11,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 import static javafx.application.Application.launch;
 
 public class BlackjackApp extends Application {
@@ -35,7 +38,7 @@ public class BlackjackApp extends Application {
     }
     public void start(Stage stage){
         game = new BlackjackGame();
-        moneyField.setText(Double.toString(game.loadMoney()));
+        moneyField.setText(showMoney());
         disableButton(hitButton, true);
         disableButton(standButton, true);
 
@@ -180,7 +183,7 @@ public class BlackjackApp extends Application {
         grid.add(winnerField, 1, 9);
         playerPointField.setEditable(false);
 
-        Scene scene = new Scene(grid, 700, 700);
+        Scene scene = new Scene(grid, 600, 600);
         stage.setTitle("BlackJack App!");
         stage.setScene(scene);
         stage.show();
@@ -216,7 +219,9 @@ public class BlackjackApp extends Application {
 
 	// affiche Total money:  et le montant total
     private String showMoney() {
-        return String.valueOf(game.getTotalMoney());
+        NumberFormat currency = NumberFormat.getCurrencyInstance(Locale.CANADA_FRENCH);
+        String totalMoneyFormatter = currency.format(game.getTotalMoney());
+        return totalMoneyFormatter;
     }
     private void showWinner() {
 
