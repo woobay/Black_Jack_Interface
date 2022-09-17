@@ -119,6 +119,7 @@ public class BlackjackApp extends Application {
                         disableButton(hitButton, false);
                         disableButton(standButton, false);
                         disableButton(playButton, true);
+                        disableButton(exitButton, true);
 
                         game.deal();
                         showDealerShowCard();
@@ -165,6 +166,7 @@ public class BlackjackApp extends Application {
             disableButton(hitButton, true);
             disableButton(standButton, true);
             disableButton(playButton, false);
+            disableButton(exitButton, false);
 
             dealerTurn();
         });
@@ -223,6 +225,7 @@ public class BlackjackApp extends Application {
         disableButton(hitButton, true);
         disableButton(standButton, true);
         disableButton(playButton, false);
+        disableButton(exitButton, false);
         dealerPointsField.setText(String.valueOf(game.getDealerHand().getPoints()));
 
         if(game.isPush()) {
