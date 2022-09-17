@@ -170,7 +170,7 @@ public class BlackjackApp extends Application {
                     showWinner();
                 }
             }catch (NumberFormatException e){
-                errorMessage("You must be enter a number!!");
+                errorMessage("You must enter a number!!");
             }
         }
     }
