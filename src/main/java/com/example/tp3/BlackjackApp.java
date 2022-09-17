@@ -48,6 +48,7 @@ public class BlackjackApp extends Application {
         grid.setVgap(10);
         grid.setHgap(10);
 
+        //------------------ Label and Field---------------------------
         grid.add(errorMessageLabel,0, 11,2, 1);
         errorMessageLabel.setTextFill(Color.RED);
 
@@ -90,7 +91,7 @@ public class BlackjackApp extends Application {
         grid.add(resultField, 1, 9);
         resultField.setFocusTraversable(false);
 
-        //Button Hit and Stand
+        //----------------- Button Hit and Stand -------------------
         hitButton.setText("Hit");
         standButton.setText("Stand");
         HBox HitStandButtonBox = new HBox(10);
@@ -98,7 +99,7 @@ public class BlackjackApp extends Application {
         HitStandButtonBox.setAlignment(Pos.BOTTOM_LEFT);
         grid.add(HitStandButtonBox, 0, 8);
 
-        // Bouton Play et Exit
+        //---------------------- Bouton Play et Exit -----------------------
         playButton.setText("Play");
         exitButton.setText("Exit");
         HBox playButtonBox = new HBox(10);
@@ -129,7 +130,7 @@ public class BlackjackApp extends Application {
         standButton.setOnAction(event -> standEvent());
     }
 
-    //----------------------Methode des Events--------------------
+    //----------------------Methode des Events Button--------------------
     private void playEvent(){
         betField.setEditable(true);
 
@@ -193,7 +194,7 @@ public class BlackjackApp extends Application {
         dealerTurn();
     }
 
-    //-------------------- Les methodes ------------------
+    //-------------------- Methodes General ------------------
     private void dealerTurn(){
         dealerCardsField.getItems().clear();
         game.stand();
