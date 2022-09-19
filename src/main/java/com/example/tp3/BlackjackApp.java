@@ -19,18 +19,18 @@ import static javafx.application.Application.launch;
 public class BlackjackApp extends Application {
 
     private static BlackjackGame game;
-    TextField moneyField = new TextField();
-    TextField betField = new TextField();
-    ListView<String> dealerCardsField = new ListView<>();
-    TextField dealerPointsField = new TextField();
-    ListView<String>  playerCardsField = new ListView<>();
-    TextField resultField = new TextField();
-    TextField playerPointField = new TextField();
-    Label errorMessageLabel = new Label();
-    Button playButton = new Button();
-    Button exitButton = new Button();
-    Button hitButton = new Button();
-    Button standButton = new Button();
+    private TextField moneyField = new TextField();
+    private TextField betField = new TextField();
+    private ListView<String> dealerCardsField = new ListView<>();
+    private TextField dealerPointsField = new TextField();
+    private ListView<String>  playerCardsField = new ListView<>();
+    private TextField resultField = new TextField();
+    private TextField playerPointField = new TextField();
+    private Label errorMessageLabel = new Label();
+    private Button playButton = new Button();
+    private Button exitButton = new Button();
+    private Button hitButton = new Button();
+    private Button standButton = new Button();
 
 
     public static void main(String[] args) {
